@@ -17,7 +17,7 @@ function Plane(props: PlaneProps) {
     <group ref={ref}>
       <mesh receiveShadow>
         <planeGeometry args={[100, 100]} />
-        <meshStandardMaterial color="#303030" />
+        <meshBasicMaterial color="#303030" />
       </mesh>
     </group>
   )
@@ -34,9 +34,9 @@ function Pillar(props: CylinderProps) {
     useRef<Mesh>(null),
   )
   return (
-    <mesh ref={ref} castShadow>
+    <mesh ref={ref}>
       <cylinderBufferGeometry args={args} />
-      <meshNormalMaterial />
+      <meshBasicMaterial />
     </mesh>
   )
 }
@@ -55,15 +55,11 @@ const VehicleScene = () => {
   return (
     <>
       <Canvas shadows camera={{ fov: 50, position: [0, 5, 15] }}>
-        <fog attach="fog" args={['#171720', 10, 50]} />
+        {/* <fog attach="fog" args={['#171720', 10, 50]} /> */}
         <color attach="background" args={['#171720']} />
-        <ambientLight intensity={0.1} />
-        <spotLight position={[10, 10, 10]} angle={0.5} intensity={1} castShadow penumbra={1} />
-        <Physics
-          broadphase="SAP"
-          defaultContactMaterial={{ contactEquationRelaxation: 4, friction: 1e-3 }}
-          allowSleep
-        >
+        <ambientLight intensity={0.5} />
+        {/* <spotLight position={[10, 10, 10]} angle={0.5} intensity={1} penumbra={1} /> */}
+        <Physics broadphase="Naive" defaultContactMaterial={{ contactEquationRelaxation: 4, friction: 1e-3 }}>
           <ToggledDebug>
             <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
             <Vehicle position={[0, 2, 0]} rotation={[0, -Math.PI / 4, 0]} angularVelocity={[0, 0.5, 0]} />
@@ -73,7 +69,7 @@ const VehicleScene = () => {
           </ToggledDebug>
         </Physics>
         <Suspense fallback={null}>
-          <Environment preset="night" />
+          <Environment preset="sunset" />
         </Suspense>
         <OrbitControls />
       </Canvas>
